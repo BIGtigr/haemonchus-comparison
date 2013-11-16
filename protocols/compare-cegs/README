@@ -1,0 +1,99 @@
+===================================
+Comparing CEGMA hits across genomes
+===================================
+
+0. Download PRJEB506 and PRJNA205202 from WormBase to current directory via
+   URLs in "urls" file, if not done already.
+
+1. Patch CEGMA.
+
+    cd ~/.apps/cegma/bin
+    cp -a completeness{,.orig} && \
+    patch -p0 < ~/work/jubilant-peanut/code/cegma_2.4-show_completeness_of_each_highly_conserved_ceg.patch && \
+    mv completeness{,.show_each_ceg} && \
+    mv completeness.orig completeness
+
+2. Run CEGMA.
+
+    for foo in PRJEB506 PRJNA205202; do
+      cd $foo
+      # --ext retains intermediate files needed for getting list of highly conserved CEGs.
+      mkdir cegma && cd cegma && cegma --genome ../h_contortus.$foo.WS239.genomic.fa -o pants --threads 16 --ext
+      ~/.apps/cegma/bin/completeness.show_each_ceg local_self.hmm_select.aln $CEGMA/data/completeness_cutoff.tbl > pants.cegma.hits
+      cd ..
+    done
+
+3. Determine complete and partial hits for each genome.
+
+    python3 parse_hits.py PRJEB506=PRJEB506/cegma/pants.cegma.hits PRJNA205202=PRJNA205202/cegma/pants.cegma.hits > hits.json
+
+4. Plot hits.
+
+    # Output in mhco3_vs_mcmaster_cegs.svg.
+    python3 plot_hits.py hits.json | R --vanilla
+
+
+=================================================================================================
+Compare CEG sequences across genomes (assumes "Comparing CEGMA hits across genomes" already done)
+=================================================================================================
+
+1. Extract exons for each annotated gene in both genomes.
+
+    for foo in PRJEB506 PRJNA205202; do
+      cd $foo/cegma
+      cat pants.cegma.gff | python2 ../../fix-cegma-gff-attr-column.py > pants.cegma.fixed.gff
+      python2 ../../extract-exons.py ../h_contortus.$foo.WS239.genomic.fa  pants.cegma.fixed.gff > pants.ceg_exons.fa
+      cd ../..
+    done
+
+2. Write CEGs that differ in presence or completeness between each genome and its brother.
+
+    mkdir -p ceg-comparisons/
+    python2 compare-ceg-sets.py
+
+3. Extract FASTA exon sequences for missing/incomplete CEGs from each genome.
+
+    cd ceg-comparisons
+
+    genome_a=PRJEB506
+    genome_b=PRJNA205202
+    fname_base=${genome_a}_complete_intersection_${genome_b}_partial
+    cat ../$genome_a/cegma/pants.ceg_exons.fa | fastagrep $(cat $fname_base.set | paste -sd' ') > $fname_base.fa
+    fname_base=${genome_a}_minus_${genome_b}
+    cat ../$genome_a/cegma/pants.ceg_exons.fa | fastagrep $(cat $fname_base.set | paste -sd' ') > $fname_base.fa
+
+    genome_a=PRJNA205202
+    genome_b=PRJEB506
+    fname_base=${genome_a}_complete_intersection_${genome_b}_partial
+    cat ../$genome_a/cegma/pants.ceg_exons.fa | fastagrep $(cat $fname_base.set | paste -sd' ') > $fname_base.fa
+    fname_base=${genome_a}_minus_${genome_b}
+    cat ../$genome_a/cegma/pants.ceg_exons.fa | fastagrep $(cat $fname_base.set | paste -sd' ') > $fname_base.fa
+
+    cd ..
+
+4. Make BLAST DBs.
+
+    mkdir -p blastdbs
+    cd blastdbs
+    for foo in PRJEB506 PRJNA205202; do
+      makeblastdb -in ../$foo/h_contortus.$foo.WS239.genomic.fa -dbtype nucl -title ${foo}_WS239_genomic -out ${foo}_WS239_genomic
+    done
+    cd ..
+
+5. Run BLAST for each gene exon set against opposing genome.
+
+    cd ceg-comparisons
+
+    genome_a=PRJEB506
+    genome_b=PRJNA205202
+    for foo in ${genome_a}_*.fa; do
+      blastn -query $foo -db ../blastdbs/${genome_b}_WS239_genomic -evalue 0.001 -outfmt 5 -out $(echo $foo | sed 's/.fa$/.blast.xml/') -num_threads 28
+    done
+
+    genome_a=PRJNA205202
+    genome_b=PRJEB506
+    for foo in ${genome_a}_*.fa; do
+      blastn -query $foo -db ../blastdbs/${genome_b}_WS239_genomic -evalue 0.001 -outfmt 5 -out $(echo $foo | sed 's/.fa$/.blast.xml/') -num_threads 28
+    done
+
+    cd ..
