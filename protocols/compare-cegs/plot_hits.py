@@ -41,7 +41,7 @@ def plot(labels, counts):
 
 def main():
   hits = parse_hits(sys.argv[1])
-  sources = ('PRJEB506/cegma/pants.cegma.hits', 'PRJNA205202/cegma/pants.cegma.hits')
+  sources = ('PRJEB506', 'PRJNA205202')
 
   labels = ('MHco3 complete', 'MHco3 partial', 'McMaster complete', 'McMaster partial')
   sets = (

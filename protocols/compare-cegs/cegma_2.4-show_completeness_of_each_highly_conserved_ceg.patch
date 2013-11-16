@@ -1,0 +1,20 @@
+--- completeness	2013-10-25 22:27:48.765167515 -0600
++++ completeness.show_each_ceg	2013-10-27 21:52:10.000806227 -0600
+@@ -189,6 +189,9 @@
+ 				my $target = ($prot_length{$kog} / 100 * $length_cutoff{$cutoff});
+ #				print "CUTOFF = $cutoff\tTARGET = $target\tPROT_LENGTH = $prot_length{$kog}\tLENGTH_CUTOFF $length_cutoff{$cutoff}\n";
+ 			    if ($align_length > ($prot_length{$kog} / 100 * $length_cutoff{$cutoff})){
++					my $matching_portion = $align_length / $prot_length{$kog};
++					print "type=$cutoff kog=$kog align_length=$align_length prot_length=$prot_length{$kog} match=$matching_portion\n";
++
+ 					$over_cutoff{$cutoff}++;
+ 					$over_cutoff_locus{$cutoff}{$kog}++;
+ 					$over_cutoff_group{$cutoff}{$conservation{$kog}}++;
+@@ -200,6 +203,7 @@
+ }
+ 
+ close(HMMSEARCH);
++exit(0);
+ 
+ 
+ ######################################################################

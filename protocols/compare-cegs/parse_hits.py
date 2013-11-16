@@ -36,10 +36,6 @@ def extract_kog_names(hits):
     names[hit_type] = list(names[hit_type])
   return names
 
-def find_overlap(hit_names):
-  for hit_type, hits in hit_names.items():
-    pass
-
 def remove_full_hits_from_partials(hits):
   hit_types = set(hits.keys())
   if set(('complete', 'partial')) != hit_types:
