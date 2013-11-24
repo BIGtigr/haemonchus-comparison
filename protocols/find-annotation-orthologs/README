@@ -68,3 +68,13 @@
     done
 
     cd ../..
+
+4. Sumamrize InParanoid results.
+
+    cd $BASEDIR/runs/inparanoid
+
+    for foo in ${RUNNAMES[@]}; do
+      $PROTDIR/parse_inparanoid.py $foo/Output*.fa
+    done
+
+    cd ../..
