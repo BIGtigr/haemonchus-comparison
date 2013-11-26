@@ -1,0 +1,117 @@
+===================================
+Comparing CEGMA hits across genomes
+===================================
+
+0. Set environment variables.
+
+    export BASEDIR=~/work/jubilant-peanut
+    export PROTDIR=$BASEDIR/protocols/compare-cegs
+
+0. Download PRJEB506 and PRJNA205202 from WormBase to data directory via
+   URLs in "urls" file, if not done already.
+
+1. Patch CEGMA.
+
+    cd ~/.apps/cegma/bin
+    cp -a completeness{,.orig} && \
+    patch -p0 < ~/work/jubilant-peanut/protocols/compare-cegs/cegma_2.4-show_completeness_of_each_highly_conserved_ceg.patch && \
+    mv completeness{,.show_each_ceg} && \
+    mv completeness.orig completeness
+
+2. Run CEGMA.
+
+    # $CEGMA must refer to CEGMA installation directory.
+
+    cd $BASEDIR
+    mkdir -p runs/compare-cegs
+    cd runs/compare-cegs
+    for foo in PRJEB506 PRJNA205202; do
+      mkdir $foo && cd $foo
+      # --ext retains intermediate files needed for getting list of highly conserved CEGs.
+      cegma --genome $BASEDIR/data/$foo/h_contortus.$foo.WS239.genomic.fa -o pants --threads 16 --ext
+      ~/.apps/cegma/bin/completeness.show_each_ceg local_self.hmm_select.aln $CEGMA/data/completeness_cutoff.tbl > pants.cegma.hits
+      cd ..
+    done
+    cd ../..
+
+3. Determine complete and partial hits for each genome.
+
+    cd $BASEDIR/runs/compare-cegs
+    python3 $PROTDIR/parse_hits.py PRJEB506=$BASEDIR/runs/compare-cegs/PRJEB506/pants.cegma.hits PRJNA205202=$BASEDIR/runs/compare-cegs/PRJNA205202/pants.cegma.hits > hits.json
+
+4. Plot hits.
+
+    # Output in mhco3_vs_mcmaster_cegs.svg.
+    python3 $PROTDIR/plot_hits.py $BASEDIR/runs/compare-cegs/hits.json | R --vanilla
+
+
+=================================================================================================
+Compare CEG sequences across genomes (assumes "Comparing CEGMA hits across genomes" already done)
+=================================================================================================
+
+0. Set environment variables.
+
+    export BASEDIR=~/work/jubilant-peanut
+    export PROTDIR=$BASEDIR/protocols/compare-cegs
+
+0. Make BLAST DBs.
+
+    cd $BASEDIR/data
+    mkdir -p blastdbs && cd blastdbs
+    for foo in PRJEB506 PRJNA205202; do
+      makeblastdb -in ../$foo/h_contortus.$foo.WS239.genomic.fa -dbtype nucl -title ${foo}_WS239_genomic -out ${foo}_WS239_genomic
+    done
+    cd ../../..
+
+1. Extract exons for each annotated gene in both genomes.
+
+    cd $BASEDIR
+    for foo in PRJEB506 PRJNA205202; do
+      cd runs/compare-cegs/$foo
+      cat pants.cegma.gff | python2 ../../../protocols/compare-cegs/fix-cegma-gff-attr-column.py > pants.cegma.fixed.gff
+      python2 $PROTDIR/extract-exons.py $BASEDIR/data/$foo/h_contortus.$foo.WS239.genomic.fa  pants.cegma.fixed.gff > pants.ceg_exons.fa
+      cd ../../../
+    done
+
+2. Write CEGs that differ in presence or completeness between each genome and its brother.
+
+    cd $BASEDIR/runs/compare-cegs/
+    mkdir ceg-comparisons/
+    python2 $PROTDIR/compare-ceg-sets.py
+    cd ../..
+
+3. Extract FASTA exon sequences for missing/incomplete CEGs from each genome.
+
+    cd $BASEDIR/runs/compare-cegs/ceg-comparisons
+
+    function extract_seqs {
+      genome_a=$1
+      genome_b=$2
+
+      for fname_base in genome_a}_complete_intersection_${genome_b}_partial ${genome_a}_minus_${genome_b}; do
+        cat ../$genome_a/pants.ceg_exons.fa | fastagrep $(cat $fname_base.set | paste -sd' ') > $fname_base.fa
+      done
+    }
+
+    extract_seqs PRJEB506 PRJNA205202
+    extract_seqs PRJNA205202 PRJEB506
+
+    cd ../../..
+
+4. Run BLAST for each gene exon set against opposing genome.
+
+    cd $BASEDIR/runs/compare-cegs/ceg-comparisons
+
+    function blast_cegs {
+      genome_a=$1
+      genome_b=$2
+
+      for foo in ${genome_a}_*.fa; do
+        blastn -query $foo -db $WD/data/blastdbs/${genome_b}_WS239_genomic -evalue 0.001 -outfmt 5 -out $(echo $foo | sed 's/.fa$/.blast.xml/') -num_threads 28
+      done
+    }
+
+    blast_cegs PRJEB506 PRJNA205202
+    blast_cegs PRJNA205202 PRJEB506
+
+    cd ..

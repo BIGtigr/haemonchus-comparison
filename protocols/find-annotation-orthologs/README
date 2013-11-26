@@ -1,0 +1,80 @@
+0. Install BLAST 2.2.26 from ftp://ftp.ncbi.nlm.nih.gov/blast/executables/release/LATEST/blast-2.2.26-x64-linux.tar.gz.
+
+0. Set environment variables.
+
+    export BASEDIR=~/work/jubilant-peanut
+    export PROTDIR=$BASEDIR/protocols/find-annotation-orthologs
+    RUNNAMES=({celegans,no}-outgroup.blosum{62,80})
+
+1. Create run directories.
+
+    mkdir -p $BASEDIR/runs/inparanoid
+    cd $BASEDIR/runs/inparanoid
+
+    for foo in ${RUNNAMES[@]}; do
+      mkdir $foo
+      cp -a ~/.apps/inparanoid/* $foo/
+    done
+
+    # Use multiple CPUs.
+    for foo in ${RUNNAMES[@]}; do
+      sed -i 's/^$blastall = "blastall"/$blastall = "blastall -a28"/' $foo/inparanoid.pl
+    done
+    for foo in celegans-outgroup.blosum{62,80}; do
+      sed -i 's/^$use_outgroup = 0/$use_outgroup = 1/' $foo/inparanoid.pl
+    done
+    for foo in {no,celegans}-outgroup.blosum80; do
+      sed -i 's/^$matrix = "BLOSUM62"/$matrix = "BLOSUM80"/' $foo/inparanoid.pl
+    done
+
+    cd ../..
+
+2. Replace protein names with numerical IDs so InParanoid is happy.
+
+    cd $BASEDIR/runs/inparanoid
+    mkdir -p proteins/
+
+    function munge_fasta {
+      organism=$1
+      id=$2
+
+      basename=lah=$(echo $foo | sed 's/.new.fa$//g');
+      cat $BASEDIR/data/$id/$organism.$id.WS239.protein.fa | $PROTDIR/fasta-munge.py $id > proteins/$id.munged.fa
+    }
+
+    munge_fasta h_contortus PRJEB506
+    munge_fasta h_contortus PRJNA205202
+    munge_fasta c_elegans   PRJNA13758
+
+    cd ../..
+
+3. Run InParanoid.
+
+    cd $BASEDIR/runs/inparanoid
+
+    for foo in no-outgroup.blosum{62,80}; do
+      cd $foo
+      # InParanoid sucks such that it requires the files it processes to reside
+      # in the same directory as the application.
+      cp -a ../proteins/{PRJEB506,PRJNA205202}.munged.fa .
+      PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa
+      cd ..
+    done
+    for foo in celegans-outgroup.blosum{62,80}; do
+      cd $foo
+      cp -a ../proteins/{PRJEB506,PRJNA205202,PRJNA13758}.munged.fa .
+      PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa PRJNA13758.munged.fa
+      cd ..
+    done
+
+    cd ../..
+
+4. Sumamrize InParanoid results.
+
+    cd $BASEDIR/runs/inparanoid
+
+    for foo in ${RUNNAMES[@]}; do
+      $PROTDIR/parse_inparanoid.py $foo/Output*.fa
+    done
+
+    cd ../..
