@@ -75,7 +75,7 @@
 
     for foo in ${RUNNAMES[@]}; do
       cd $foo
-      $PROTDIR/parse_inparanoid.py Output*.fa
+      $PROTDIR/parse_inparanoid.py Output*.fa > orthologue-summary
       cd ..
     done
 
