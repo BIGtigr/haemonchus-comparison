@@ -8,6 +8,12 @@ file both lack data.
 Usage: parse_inparanoid.py Output.PRJEB506.munged.fa-PRJNA205202.munged.fa
 '''
 
+import math
+import matplotlib
+# Force matplotlib not to use X11 backend.
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 import sys
 from collections import defaultdict
 
@@ -118,13 +124,13 @@ class StateMachine(object):
     if len(fields) != 4:
       raise Exception('Unknown number of fields for group sequence: %s' % len(fields))
 
-    seq_a = fields[0]
-    seq_b = fields[2]
+    seq_a = fields[0].strip()
+    seq_b = fields[2].strip()
 
-    if not seq_a.isspace():
+    if seq_a != '':
       score_a = self._parse_percentage(fields[1])
       self._current_group['a'].append((seq_a, score_a))
-    if not seq_b.isspace():
+    if seq_b != '':
       score_b = self._parse_percentage(fields[3])
       self._current_group['b'].append((seq_b, score_b))
 
@@ -148,24 +154,44 @@ def summarize_groups(groups):
     * n_to_n: Instances where multiple sequences in A correspond to multiple
       sequences in B
   '''
-  counts = defaultdict(int)
+  summary = defaultdict(int)
 
   for group in groups:
     a_len = len(group.a)
     b_len = len(group.b)
 
     if a_len == b_len == 1:
-      counts['1_to_1'] += 1
+      summary['1_to_1'] += 1
     elif a_len > 1 and b_len > 1:
-      counts['n_to_n'] += 1
+      summary['n_to_n'] += 1
     elif a_len > 1:
-      counts['n_to_1'] += 1
+      summary['n_to_1'] += 1
     elif b_len > 1:
-      counts['1_to_n'] += 1
+      summary['1_to_n'] += 1
     else:
       raise Exception('Unexpectedly empty group')
 
-  return dict(counts)
+
+  return dict(summary)
+
+def plot_groups(groups, filename, log_y_scale):
+  vals = []
+
+  for group in groups:
+    a_len = len(group.a)
+    b_len = len(group.b)
+    log = math.log(float(a_len) / float(b_len), 2)
+    vals.append(log)
+
+  bins = list(range(int(math.floor(min(vals))), int(math.ceil(max(vals))) + 1))
+  plt.figure()
+  plt.xticks(bins)
+  plt.hist(vals, bins=bins, log=log_y_scale, facecolor='green', alpha=0.5)
+
+  plt.title('Distribution of gene counts')
+  plt.xlabel('$log_2(PRJEB506 / PRJNA205202)$')
+  plt.ylabel(log_y_scale and '$log_{10}(Occurrences)$' or 'Occurrences')
+  plt.savefig(filename)
 
 def main():
   for input_filename in sys.argv[1:]:
@@ -175,6 +201,9 @@ def main():
     results = sm.results()
 
     summary = summarize_groups(results['groups'])
+    plot_groups(results['groups'], 'groups_log.png',    True)
+    plot_groups(results['groups'], 'groups_linear.png', False)
+
     print('%s:' % input_filename)
     for key in sorted(summary.keys()):
       print('  %s=%s' % (key, summary[key]))
