@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 '''
 This script parses the human-readable output file from InParanoid.
 Unfortunately, only the human-readable output (as well as the HTML file

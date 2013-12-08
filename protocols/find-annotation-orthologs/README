@@ -74,7 +74,9 @@
     cd $BASEDIR/runs/inparanoid
 
     for foo in ${RUNNAMES[@]}; do
-      $PROTDIR/parse_inparanoid.py $foo/Output*.fa
+      cd $foo
+      $PROTDIR/parse_inparanoid.py Output*.fa
+      cd ..
     done
 
     cd ../..
