@@ -188,9 +188,9 @@ def plot_groups(groups, filename, log_y_scale):
   plt.xticks(bins)
   plt.hist(vals, bins=bins, log=log_y_scale, facecolor='green', alpha=0.5)
 
-  plt.title('Distribution of gene counts')
-  plt.xlabel('$log_2(PRJEB506 / PRJNA205202)$')
-  plt.ylabel(log_y_scale and '$log_{10}(Occurrences)$' or 'Occurrences')
+  plt.title('Distribution of orthologous group gene counts')
+  plt.xlabel('$log_2(MHco3(ISE) / McMaster)$')
+  plt.ylabel('Occurrences')
   plt.savefig(filename)
 
 def main():
