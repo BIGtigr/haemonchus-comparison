@@ -38,7 +38,6 @@
       organism=$1
       id=$2
 
-      basename=lah=$(echo $foo | sed 's/.new.fa$//g');
       cat $BASEDIR/data/$id/$organism.$id.WS239.protein.fa | $PROTDIR/fasta-munge.py $id > proteins/$id.munged.fa
     }
 
