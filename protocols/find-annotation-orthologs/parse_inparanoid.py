@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 
 import sys
 from collections import defaultdict
+import json
+
+import re
 
 # From http://stackoverflow.com/a/14620633/1691611
 class AttrDict(dict):
@@ -171,7 +174,6 @@ def summarize_groups(groups):
     else:
       raise Exception('Unexpectedly empty group')
 
-
   return dict(summary)
 
 def plot_groups(groups, filename, log_y_scale):
@@ -193,20 +195,94 @@ def plot_groups(groups, filename, log_y_scale):
   plt.ylabel('Occurrences')
   plt.savefig(filename)
 
+def parse_transcripts(gff_filename):
+  transcripts = {}
+
+  with open(gff_filename) as gff_file:
+    for line in gff_file:
+      line = line.strip()
+      if line == '' or line.startswith('#'):
+        continue
+
+      fields = line.split('\t')
+      if not fields[2] == 'mRNA':
+        continue
+
+      attribs = dict([f.split('=', 1) for f in fields[8].split(';')])
+      seqid = attribs['ID']
+      if seqid in transcripts:
+        raise Exception('Duplicate seqid %s' % seqid)
+      transcripts[seqid] = {
+        'seqid': fields[0],
+        'start': int(fields[3]),
+        'end':  int(fields[4]),
+        'strand': fields[6],
+      }
+
+  return transcripts
+
+
+def examine_contiguity(groups):
+  # Natural sorting technique taken from http://stackoverflow.com/a/2669120/1691611.
+  def sort_transcript_tuples(tt):
+    convert = lambda text: int(text) if text.isdigit() else text
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    tt.sort(key=lambda c: alphanum_key(c[1]))
+
+  mappings = {}
+  with open(sys.argv[2]) as f:
+    mappings['a'] = json.load(f)
+  with open(sys.argv[3]) as f:
+    mappings['b'] = json.load(f)
+
+  transcripts = {
+    'a': parse_transcripts(sys.argv[4]),
+    'b': parse_transcripts(sys.argv[5]),
+  }
+
+  for group in groups:
+    a_len, b_len = len(group['a']), len(group['b'])
+    if a_len == b_len == 1:
+      continue
+
+    print('Group (a:b = %s:%s)' % (a_len, b_len))
+
+    for gname in group.keys():
+      group_seqs = []
+      for seqname, score in group[gname]:
+        seq = {
+          'full_name': mappings[gname][seqname],
+          'renamed':   seqname,
+          'score':     score,
+        }
+        seq['name'] = seq['full_name'].split()[0]
+        seq['transcript'] = transcripts[gname]['transcript:%s' % seq['name']]
+        group_seqs.append(seq)
+
+      transcript_names = [(t['transcript']['seqid'], t['transcript']['strand']) for t in group_seqs]
+      counts = [(transcript_names.count(t), t[0], t[1]) for t in set(transcript_names)]
+      sort_transcript_tuples(counts)
+
+      for count, seqid, strand in counts:
+        print('%s %s %s %s' % (gname, seqid.ljust(20), strand.ljust(4), count))
+    print('')
+
 def main():
-  for input_filename in sys.argv[1:]:
-    with open(input_filename) as input_file:
-      sm = StateMachine(input_file)
-      sm.run()
-    results = sm.results()
+  input_filename = sys.argv[1]
 
-    summary = summarize_groups(results['groups'])
-    plot_groups(results['groups'], 'groups_log.png',    True)
-    plot_groups(results['groups'], 'groups_linear.png', False)
+  with open(input_filename) as input_file:
+    sm = StateMachine(input_file)
+    sm.run()
+  results = sm.results()
 
-    print('%s:' % input_filename)
-    for key in sorted(summary.keys()):
-      print('  %s=%s' % (key, summary[key]))
+  summary = summarize_groups(results['groups'])
+  plot_groups(results['groups'], 'groups_log.png',    True)
+  plot_groups(results['groups'], 'groups_linear.png', False)
+  examine_contiguity(results['groups'])
+
+  print('%s:' % input_filename)
+  for key in sorted(summary.keys()):
+    print('  %s=%s' % (key, summary[key]))
 
 if __name__ == '__main__':
   main()
