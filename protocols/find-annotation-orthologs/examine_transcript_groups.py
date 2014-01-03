@@ -48,10 +48,13 @@ def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_t
     'b': parse_transcripts(b_transcripts),
   }
 
-  for group in groups:
+  for i, group in enumerate(groups):
     a_len, b_len = len(group['a']), len(group['b'])
     if a_len == b_len == 1:
       continue
+
+    if i > 0:
+      print('')
 
     print('Group (a:b = %s:%s)' % (a_len, b_len))
 
@@ -73,7 +76,7 @@ def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_t
 
       for count, seqid, strand in counts:
         print('%s %s %s %s' % (gname, seqid.ljust(20), strand.ljust(4), count))
-    print('')
+
 
 def main():
   group_a_transcript_mappings = sys.argv[1]
