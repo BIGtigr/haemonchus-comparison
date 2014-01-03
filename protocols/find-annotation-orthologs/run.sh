@@ -7,8 +7,9 @@ function set_env {
 }
 
 function create_dirs {
+  rm -rf   $BASEDIR/runs/inparanoid
   mkdir -p $BASEDIR/runs/inparanoid
-  cd $BASEDIR/runs/inparanoid
+  cd       $BASEDIR/runs/inparanoid
 
   for foo in ${RUNNAMES[@]}; do
     mkdir $foo

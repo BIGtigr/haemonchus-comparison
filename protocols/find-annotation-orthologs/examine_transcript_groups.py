@@ -36,18 +36,27 @@ def sort_transcript_tuples(transcript_tuples):
   alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
   transcript_tuples.sort(key=lambda c: alphanum_key(c[1]))
 
-def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_transcripts, b_transcripts):
-  mappings = {}
-  with open(a_transcript_mappings) as f:
-    mappings['a'] = json.load(f)
-  with open(b_transcript_mappings) as f:
-    mappings['b'] = json.load(f)
+def process_group(group, mappings, transcripts):
+  for gname in group.keys():
+    group_seqs = []
+    for seqname, score in group[gname]:
+      seq = {
+        'full_name': mappings[gname][seqname],
+        'renamed':   seqname,
+        'score':     score,
+      }
+      seq['name'] = seq['full_name'].split()[0]
+      seq['transcript'] = transcripts[gname]['transcript:%s' % seq['name']]
+      group_seqs.append(seq)
 
-  transcripts = {
-    'a': parse_transcripts(a_transcripts),
-    'b': parse_transcripts(b_transcripts),
-  }
+    transcript_names = [(t['transcript']['seqid'], t['transcript']['strand']) for t in group_seqs]
+    counts = [(transcript_names.count(t), t[0], t[1]) for t in set(transcript_names)]
+    sort_transcript_tuples(counts)
 
+    for count, seqid, strand in counts:
+      print('%s %s %s %s' % (gname, seqid.ljust(20), strand.ljust(4), count))
+
+def process_groups(groups, mappings, transcripts):
   already_printed_first = False
 
   for i, group in enumerate(groups):
@@ -61,25 +70,21 @@ def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_t
       already_printed_first = True
 
     print('Group (a:b = %s:%s)' % (a_len, b_len))
+    process_group(group, mappings, transcripts)
 
-    for gname in group.keys():
-      group_seqs = []
-      for seqname, score in group[gname]:
-        seq = {
-          'full_name': mappings[gname][seqname],
-          'renamed':   seqname,
-          'score':     score,
-        }
-        seq['name'] = seq['full_name'].split()[0]
-        seq['transcript'] = transcripts[gname]['transcript:%s' % seq['name']]
-        group_seqs.append(seq)
+def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_transcripts, b_transcripts):
+  mappings = {}
+  with open(a_transcript_mappings) as f:
+    mappings['a'] = json.load(f)
+  with open(b_transcript_mappings) as f:
+    mappings['b'] = json.load(f)
 
-      transcript_names = [(t['transcript']['seqid'], t['transcript']['strand']) for t in group_seqs]
-      counts = [(transcript_names.count(t), t[0], t[1]) for t in set(transcript_names)]
-      sort_transcript_tuples(counts)
+  transcripts = {
+    'a': parse_transcripts(a_transcripts),
+    'b': parse_transcripts(b_transcripts),
+  }
 
-      for count, seqid, strand in counts:
-        print('%s %s %s %s' % (gname, seqid.ljust(20), strand.ljust(4), count))
+  process_groups(groups, mappings, transcripts)
 
 def main():
   group_a_transcript_mappings = sys.argv[1]
