@@ -74,7 +74,9 @@ function process_results {
 
   for foo in ${RUNNAMES[@]}; do
     cd $foo
-    mkdir results
+    if [[ ! -d results ]]; then
+      mkdir results
+    fi
 
     PARSED=results/inparanoid_results.json
     $PROTDIR/parse_inparanoid.py Output*.fa > $PARSED

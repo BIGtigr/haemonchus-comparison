@@ -48,13 +48,17 @@ def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_t
     'b': parse_transcripts(b_transcripts),
   }
 
+  already_printed_first = False
+
   for i, group in enumerate(groups):
     a_len, b_len = len(group['a']), len(group['b'])
     if a_len == b_len == 1:
       continue
 
-    if i > 0:
+    if already_printed_first:
       print('')
+    else:
+      already_printed_first = True
 
     print('Group (a:b = %s:%s)' % (a_len, b_len))
 
