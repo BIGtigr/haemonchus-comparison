@@ -32,10 +32,12 @@ def plot_groups(groups, filename, make_y_scale_log, group_a_label, group_b_label
 def main():
   group_a_label = sys.argv[1]
   group_b_label = sys.argv[2]
+  output_linear = sys.argv[3]
+  output_log    = sys.argv[4]
 
   ortho_groups = json.load(sys.stdin)['groups']
-  plot_groups(ortho_groups, 'ortho_groups_log.png',    True,  group_a_label, group_b_label)
-  plot_groups(ortho_groups, 'ortho_groups_linear.png', False, group_a_label, group_b_label)
+  plot_groups(ortho_groups, output_linear, False, group_a_label, group_b_label)
+  plot_groups(ortho_groups, output_log,    True,  group_a_label, group_b_label)
 
 if __name__ == '__main__':
   main()

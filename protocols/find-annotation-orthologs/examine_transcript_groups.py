@@ -77,7 +77,6 @@ def examine_contiguity(groups, a_transcript_mappings, b_transcript_mappings, a_t
       for count, seqid, strand in counts:
         print('%s %s %s %s' % (gname, seqid.ljust(20), strand.ljust(4), count))
 
-
 def main():
   group_a_transcript_mappings = sys.argv[1]
   group_b_transcript_mappings = sys.argv[2]
