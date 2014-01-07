@@ -24,6 +24,7 @@ class TranscriptManager(object):
       strand     TEXT
     )''')
     cursor.execute('CREATE INDEX idx_name ON transcripts(name)')
+    cursor.execute('CREATE INDEX idx_seqid_strand ON transcripts(seqid, strand)')
     self._commit()
 
   def _insert_transcripts(self, transcripts, group_name):
@@ -173,5 +174,6 @@ def main():
   examine_contiguity(ortho_groups, transcript_mapping_fnames, transcript_fnames)
 
 if __name__ == '__main__':
-  import cProfile
-  cProfile.run('main()')
+  #import cProfile
+  #cProfile.run('main()')
+  main()

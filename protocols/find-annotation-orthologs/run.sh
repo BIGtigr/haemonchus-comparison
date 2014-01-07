@@ -57,16 +57,17 @@ function run_inparanoid {
     # InParanoid sucks such that it requires the files it processes to reside
     # in the same directory as the application.
     cp -a ../proteins/{PRJEB506,PRJNA205202}.munged.fa .
-    PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa
+    PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa &
     cd ..
   done
   for foo in celegans-outgroup.blosum{62,80}; do
     cd $foo
     cp -a ../proteins/{PRJEB506,PRJNA205202,PRJNA13758}.munged.fa .
-    PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa PRJNA13758.munged.fa
+    PATH=~/.apps/blast-2.2.26/bin/:$PATH ./inparanoid.pl PRJEB506.munged.fa PRJNA205202.munged.fa PRJNA13758.munged.fa &
     cd ..
   done
 
+  wait
   cd ../..
 }
 
