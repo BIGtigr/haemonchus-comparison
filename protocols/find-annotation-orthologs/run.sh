@@ -11,6 +11,8 @@ function create_dirs {
   mkdir -p $BASEDIR/runs/inparanoid
   cd       $BASEDIR/runs/inparanoid
 
+  mkdir proteins
+
   for foo in ${RUNNAMES[@]}; do
     mkdir $foo
     cp -a ~/.apps/inparanoid/* $foo/
@@ -30,22 +32,44 @@ function create_dirs {
   cd ../..
 }
 
+function filter_isoforms_for_genome {
+  id=$1
+  organism=$2
+  delimiter=$3
+
+  $PROTDIR/filter_isoforms.py $BASEDIR/data/$id/$organism.$id.WS239.protein.fa $delimiter \
+    > proteins/$id.filtered_isoforms.fa
+}
+
+# Retain only longest sequence for each gene, removing shorter isoforms.
+function filter_isoforms {
+  cd $BASEDIR/runs/inparanoid
+
+  filter_isoforms_for_genome PRJEB506    h_contortus '.' &
+  filter_isoforms_for_genome PRJNA205202 h_contortus '-' &
+
+  wait
+  cd ../..
+}
+
 function munge_fasta {
-  organism=$1
+  protein_path=$1
   id=$2
 
-  cat $BASEDIR/data/$id/$organism.$id.WS239.protein.fa | $PROTDIR/munge_fasta.py $id proteins/$id.munged.fa proteins/$id.name_map.json
+  cat $protein_path | $PROTDIR/munge_fasta.py $id proteins/$id.munged.fa proteins/$id.name_map.json
 }
 
 # Replace protein names with numerical IDs so InParanoid is happy.
 function alter_fasta_ids {
   cd $BASEDIR/runs/inparanoid
-  mkdir -p proteins/
 
-  munge_fasta h_contortus PRJEB506
-  munge_fasta h_contortus PRJNA205202
-  munge_fasta c_elegans   PRJNA13758
+  for id in PRJEB506 PRJNA205202; do
+    munge_fasta proteins/$id.filtered_isoforms.fa $id &
+  done
+  id=PRJNA13758
+  munge_fasta $BASEDIR/data/$id/c_elegans.$id.WS239.protein.fa $id &
 
+  wait
   cd ../..
 }
 
@@ -99,6 +123,7 @@ function process_results {
 function main {
   set_env
   create_dirs
+  filter_isoforms
   alter_fasta_ids
   run_inparanoid
   process_results
