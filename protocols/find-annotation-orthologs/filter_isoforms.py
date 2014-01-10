@@ -52,7 +52,8 @@ def print_longest_isoforms_for_each_gene(in_file, delimiter, seq_lengths):
       del seq_lengths[gene_id]
 
 def main():
-  # Can't use stdin, as must read *twice* -- first to calculate length of each sequence, and then to output longest sequence for each.
+  # Can't use stdin, as must read *twice* -- first to calculate length of each
+  # sequence, and then to output longest sequence for each.
   input_fasta_filename = sys.argv[1]
 
   # Delimiter: character after whose final occurrence the isoform-specific

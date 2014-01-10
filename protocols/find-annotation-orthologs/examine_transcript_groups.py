@@ -87,23 +87,24 @@ class TranscriptManager(object):
     placeholders = ', '.join(['?' for t in transcript_names])
     cursor.execute('''
       SELECT
-        group_name,
-        seqid,
-        strand,
-        COUNT(seqid) AS orthologues_on_scaffold_count,
-        (SELECT COUNT(*)
-         FROM transcripts t2
-         WHERE
-           t2.seqid = t1.seqid AND
-           t2.strand = t1.strand) AS transcripts_on_scaffold_count
+        t1.group_name,
+        t1.seqid,
+        t1.strand,
+        COUNT(t1.seqid) AS orthologues_on_scaffold_count,
+        (
+          SELECT COUNT(*)
+          FROM transcripts t2
+          WHERE
+            t2.seqid = t1.seqid AND
+            t2.strand = t1.strand
+        ) AS transcripts_on_scaffold_count
       FROM transcripts t1
       WHERE t1.name in (%s)
-      GROUP BY t1.seqid, t1.strand
+      GROUP BY t1.seqid, t1.strand, t1.group_name
       ORDER BY t1.group_name, t1.seqid
       ''' % placeholders,
       ['transcript:' + tname for tname in transcript_names]
     )
-
     rows = cursor.fetchall()
 
     # As any transcripts not in DB for "WHERE t1.name IN (...)" will silently
