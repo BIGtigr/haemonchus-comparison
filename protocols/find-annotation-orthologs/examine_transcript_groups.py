@@ -201,6 +201,8 @@ def process_ortho_groups(ortho_groups, mappings, transcript_manager):
 
   for i, ogroup in enumerate(ortho_groups):
     a_len, b_len = len(ogroup['a']), len(ogroup['b'])
+    # We aren't interested in 1:1 relationships between orthologues, as we
+    # already know each orthologue lies on a single scaffold.
     if a_len == b_len == 1:
       continue
 
