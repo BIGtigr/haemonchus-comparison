@@ -43,8 +43,21 @@ class TranscriptManager(object):
 
     self._commit()
 
-  def _parse_gff(self, gff_filename):
+  def _retrieve_transcript_names(self, mapping):
+    '''
+    Retrieve transcript names specified in mapping file. This is necessary as
+    not all transcripts listed in the GFF file should be inserted into the
+    database -- we want only the transcripts specified in the input FASTA file.
+    (Note that, in the current implementation, this FASTA file will list only
+    the longest isoform for each gene.)
+    '''
+    gene_names = mapping.values()
+    gene_names = [n.split()[0] for n in gene_names]
+    return gene_names
+
+  def _parse_gff(self, gff_filename, mapping):
     transcripts = {}
+    mapped_transcript_names = self._retrieve_transcript_names(mapping)
 
     with open(gff_filename) as gff_file:
       for line in gff_file:
@@ -58,8 +71,14 @@ class TranscriptManager(object):
 
         attribs = dict([f.split('=', 1) for f in fields[8].split(';')])
         tid = attribs['ID']
+        if tid.startswith('transcript:'):
+          tid = tid.split(':', 1)[1]
+
         if tid in transcripts:
           raise Exception('Duplicate seqid %s' % seqid)
+        if tid not in mapped_transcript_names:
+          continue
+
         transcripts[tid] = {
           'seqid':  fields[0],
           'tstart':  int(fields[3]),
@@ -75,8 +94,8 @@ class TranscriptManager(object):
   def _commit(self):
     self._conn.commit()
 
-  def parse(self, gff_filename, group_name):
-    transcripts = self._parse_gff(gff_filename)
+  def parse(self, gff_filename, mapping, group_name):
+    transcripts = self._parse_gff(gff_filename, mapping)
     self._insert_transcripts(transcripts, group_name)
 
   def close(self):
@@ -89,6 +108,7 @@ class TranscriptManager(object):
       FROM transcripts t1
       WHERE
         t1.name NOT IN (%s)  AND
+        t1.group_name = ?    AND
         t1.seqid = ?         AND
         t1.strand = ?        AND
         (
@@ -97,6 +117,7 @@ class TranscriptManager(object):
           (CASE WHEN t1.tstart > ? THEN t1.tstart ELSE ? END) -- MAX(t1.tstart, placeholder)
         )
       ''' % placeholders, transcript_names + [
+        row['group_name'],
         row['seqid'],
         row['strand'],
         row['group_end'],
@@ -112,7 +133,6 @@ class TranscriptManager(object):
   def find_scaffolds(self, transcript_names):
     cursor = self._cursor()
     placeholders     = ', '.join(['?' for t in transcript_names])
-    transcript_names = ['transcript:' + tname for tname in transcript_names]
     cursor.execute('''
       SELECT
         t1.group_name,
@@ -199,7 +219,7 @@ def examine_contiguity(ortho_groups, transcript_mapping_fnames, transcript_fname
   for gname in ('a', 'b'):
     with open(transcript_mapping_fnames[gname]) as f:
       mappings[gname] = json.load(f)
-    tm.parse(transcript_fnames[gname], gname)
+    tm.parse(transcript_fnames[gname], mappings[gname], gname)
 
   process_ortho_groups(ortho_groups, mappings, tm)
 
