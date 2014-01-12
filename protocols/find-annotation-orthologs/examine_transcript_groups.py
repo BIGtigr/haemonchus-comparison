@@ -19,8 +19,8 @@ class TranscriptManager(object):
       group_name TEXT,
       name       TEXT,
       seqid      TEXT,
-      start      INTEGER,
-      end        INTEGER,
+      tstart     INTEGER,
+      tend       INTEGER,
       strand     TEXT
     )''')
     cursor.execute('CREATE INDEX idx_name ON transcripts(name)')
@@ -32,12 +32,12 @@ class TranscriptManager(object):
 
     for tid, transcript in transcripts.items():
       cursor.execute(
-        'INSERT INTO transcripts (group_name, name, seqid, start, end, strand) VALUES (?, ?, ?, ?, ?, ?)', (
+        'INSERT INTO transcripts (group_name, name, seqid, tstart, tend, strand) VALUES (?, ?, ?, ?, ?, ?)', (
         group_name,
         tid,
         transcript['seqid'],
-        transcript['start'],
-        transcript['end'],
+        transcript['tstart'],
+        transcript['tend'],
         transcript['strand'],
       ))
 
@@ -62,8 +62,8 @@ class TranscriptManager(object):
           raise Exception('Duplicate seqid %s' % seqid)
         transcripts[tid] = {
           'seqid':  fields[0],
-          'start':  int(fields[3]),
-          'end':    int(fields[4]),
+          'tstart':  int(fields[3]),
+          'tend':    int(fields[4]),
           'strand': fields[6],
         }
 
@@ -82,9 +82,37 @@ class TranscriptManager(object):
   def close(self):
     self._conn.close()
 
+  def _determine_intervening_genes(self, row, placeholders, transcript_names):
+    cursor = self._cursor()
+    cursor.execute('''
+      SELECT COUNT(*) AS intervening_genes
+      FROM transcripts t1
+      WHERE
+        t1.name NOT IN (%s)  AND
+        t1.seqid = ?         AND
+        t1.strand = ?        AND
+        (
+          (CASE WHEN t1.tend   < ? THEN t1.tend   ELSE ? END) -- MIN(t1.tend, placeholder)
+          >
+          (CASE WHEN t1.tstart > ? THEN t1.tstart ELSE ? END) -- MAX(t1.tstart, placeholder)
+        )
+      ''' % placeholders, transcript_names + [
+        row['seqid'],
+        row['strand'],
+        row['group_end'],
+        row['group_end'],
+        row['group_start'],
+        row['group_start'],
+      ]
+    )
+
+    result = cursor.fetchone()
+    row['intervening_genes'] = result['intervening_genes']
+
   def find_scaffolds(self, transcript_names):
     cursor = self._cursor()
-    placeholders = ', '.join(['?' for t in transcript_names])
+    placeholders     = ', '.join(['?' for t in transcript_names])
+    transcript_names = ['transcript:' + tname for tname in transcript_names]
     cursor.execute('''
       SELECT
         t1.group_name,
@@ -97,15 +125,20 @@ class TranscriptManager(object):
           WHERE
             t2.seqid = t1.seqid AND
             t2.strand = t1.strand
-        ) AS transcripts_on_scaffold_count
+        ) AS transcripts_on_scaffold_count,
+        MIN(t1.tstart) AS group_start,
+        MAX(t1.tend)   AS group_end
       FROM transcripts t1
-      WHERE t1.name in (%s)
+      WHERE t1.name IN (%s)
       GROUP BY t1.seqid, t1.strand, t1.group_name
       ORDER BY t1.group_name, t1.seqid
       ''' % placeholders,
-      ['transcript:' + tname for tname in transcript_names]
+      transcript_names
     )
     rows = cursor.fetchall()
+    rows = [dict(r) for r in rows]
+    for row in rows:
+      self._determine_intervening_genes(row, placeholders, transcript_names)
 
     # As any transcripts not in DB for "WHERE t1.name IN (...)" will silently
     # be omitted from SQL result set, we must ensure that the sizes of the
@@ -132,12 +165,15 @@ def process_ortho_group(ogroup, mappings, transcript_manager):
       transcripts.append(orig_name)
 
     for row in transcript_manager.find_scaffolds(transcripts):
-      print('%s %s %s %s %s' % (
+      print('%s %-20s %-4s %2s %2s %-5s %s' % (
         row['group_name'],
-        row['seqid'].ljust(20),
-        row['strand'].ljust(4),
+        row['seqid'],
+        row['strand'],
         row['orthologues_on_scaffold_count'],
         row['transcripts_on_scaffold_count'],
+        # Boolean indicating whether orthologues tandemly arrayed.
+        row['intervening_genes'] == 0,
+        row['intervening_genes'],
       ))
 
 def process_ortho_groups(ortho_groups, mappings, transcript_manager):
