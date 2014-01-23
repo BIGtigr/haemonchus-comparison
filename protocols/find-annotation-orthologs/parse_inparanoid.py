@@ -1,30 +1,16 @@
 #!/usr/bin/env python2
-'''
-This script parses the human-readable output file from InParanoid.
-Unfortunately, only the human-readable output (as well as the HTML file
-containing the same information) list all InParanoid results; the table and CSV
-file both lack data.
 
-Usage: parse_inparanoid.py Output.PRJEB506.munged.fa-PRJNA205202.munged.fa
 '''
+This script parses the human-readable output file from InParanoid, then dumps
+them to a JSON file Unfortunately, only the human-readable output (as well as
+the HTML file containing the same information) list all InParanoid results; the
+table and CSV file both lack data.
 
-import math
-import matplotlib
-# Force matplotlib not to use X11 backend.
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+Usage: parse_paranoid.py <InParanoid results file>
+'''
 
 import sys
-from collections import defaultdict
-
-# From http://stackoverflow.com/a/14620633/1691611
-class AttrDict(dict):
-  '''
-  Permit access to dictionary keys as attributes (i.e., d['k'] can be accessed as d.k).
-  '''
-  def __init__(self, *args, **kwargs):
-    super(AttrDict, self).__init__(*args, **kwargs)
-    self.__dict__ = self
+import json
 
 class NoTransitionError(Exception):
   '''
@@ -105,7 +91,7 @@ class StateMachine(object):
       raise NoTransitionError()
 
     self._switch(self._group_header)
-    self._current_group = AttrDict({'a': [], 'b': []})
+    self._current_group = {'a': [], 'b': []}
 
   def _group_header(self, line):
     if line.startswith('Group of') or line.startswith('Score difference'):
@@ -139,74 +125,13 @@ class StateMachine(object):
       return
     self._switch(self._new_group, True)
 
-def summarize_groups(groups):
-  '''
-  Suppose InParanoid was run on sequence sets A and B. This function returns a
-  dictionary counting occurrences of the following orthologue groupp
-  relationships:
-
-    * 1_to_1: Instances where a single sequence in A corresponds to a single
-      sequence in B
-    * 1_to_n: Instances where a single sequence in A corresponds to multiple
-      sequences in B
-    * n_to_1: Instances where multiple sequences in A correspond to a single
-      sequence in B
-    * n_to_n: Instances where multiple sequences in A correspond to multiple
-      sequences in B
-  '''
-  summary = defaultdict(int)
-
-  for group in groups:
-    a_len = len(group.a)
-    b_len = len(group.b)
-
-    if a_len == b_len == 1:
-      summary['1_to_1'] += 1
-    elif a_len > 1 and b_len > 1:
-      summary['n_to_n'] += 1
-    elif a_len > 1:
-      summary['n_to_1'] += 1
-    elif b_len > 1:
-      summary['1_to_n'] += 1
-    else:
-      raise Exception('Unexpectedly empty group')
-
-
-  return dict(summary)
-
-def plot_groups(groups, filename, log_y_scale):
-  vals = []
-
-  for group in groups:
-    a_len = len(group.a)
-    b_len = len(group.b)
-    log = math.log(float(a_len) / float(b_len), 2)
-    vals.append(log)
-
-  bins = list(range(int(math.floor(min(vals))), int(math.ceil(max(vals))) + 1))
-  plt.figure()
-  plt.xticks(bins)
-  plt.hist(vals, bins=bins, log=log_y_scale, facecolor='green', alpha=0.5)
-
-  plt.title('Distribution of orthologous group gene counts')
-  plt.xlabel('$log_2(MHco3(ISE) / McMaster)$')
-  plt.ylabel('Occurrences')
-  plt.savefig(filename)
-
 def main():
-  for input_filename in sys.argv[1:]:
-    with open(input_filename) as input_file:
-      sm = StateMachine(input_file)
-      sm.run()
-    results = sm.results()
+  inparanoid_results_filename = sys.argv[1]
 
-    summary = summarize_groups(results['groups'])
-    plot_groups(results['groups'], 'groups_log.png',    True)
-    plot_groups(results['groups'], 'groups_linear.png', False)
-
-    print('%s:' % input_filename)
-    for key in sorted(summary.keys()):
-      print('  %s=%s' % (key, summary[key]))
+  with open(inparanoid_results_filename) as inparanoid_results_file:
+    sm = StateMachine(inparanoid_results_file)
+    sm.run()
+  json.dump(sm.results(), sys.stdout)
 
 if __name__ == '__main__':
   main()
