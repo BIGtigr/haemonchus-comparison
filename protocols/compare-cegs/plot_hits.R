@@ -23,3 +23,13 @@ v <- Venn(
 svg('mhco3_vs_mcmaster_cegs.svg')
 plot(v, doWeights = FALSE, type='ellipses', show = list(SetLabels=TRUE))
 dev.off()
+
+v <- Venn(SetNames=c('MHco3', 'McMaster'), Weight=c('01'=75, '10'=32, '11'=25))
+svg('missing_complete.svg')
+plot(v, doWeights = FALSE, type='circles', show = list(SetLabels=TRUE))
+dev.off()
+
+v <- Venn(SetNames=c('MHco3', 'McMaster'), Weight=c('01'=29, '10'=16, '11'=6))
+svg('missing_comp+part.svg')
+plot(v, doWeights = FALSE, type='circles', show = list(SetLabels=TRUE))
+dev.off()
