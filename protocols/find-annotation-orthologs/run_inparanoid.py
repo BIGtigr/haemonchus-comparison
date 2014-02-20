@@ -103,18 +103,25 @@ def alter_fasta_ids(genome_id, protein_path, regenerate_data):
     'name_map':     name_map
   }
 
-def prepare_inparanoid(outgroup):
+def prepare_inparanoid(outgroup, matrix):
   os.chdir(CONF['RUNDIR'])
   cm.run('cp -a {inparanoid_path} inparanoid'.format(
     inparanoid_path = os.path.expanduser('~/.apps/inparanoid/'),
   ))
 
-  if outgroup:
-    cm.run('''sed -i 's/^$use_outgroup = 0/$use_outgroup = 1/' inparanoid/inparanoid.pl''')
   # Use multiple CPUs.
   cm.run('''sed -i 's/^$blastall = "blastall"/$blastall = "blastall -a28"/' inparanoid/inparanoid.pl''')
+  if outgroup:
+    cm.run('''sed -i 's/^$use_outgroup = 0/$use_outgroup = 1/' inparanoid/inparanoid.pl''')
+
   # Set matrix.
-  cm.run('''sed -i 's/^$matrix = "BLOSUM62"/$matrix = "BLOSUM80"/' inparanoid/inparanoid.pl''')
+  if matrix == 'BLOSUM2':
+    # Default, so do nothing.
+    pass
+  elif matrix == 'BLOSUM80':
+    cm.run('''sed -i 's/^$matrix = "BLOSUM62"/$matrix = "BLOSUM80"/' inparanoid/inparanoid.pl''')
+  else:
+    raise Exception('Unknown matrix: %s' % matrix)
 
 def run_inparanoid(genome_a, genome_b, outgroup):
   os.chdir(os.path.join(CONF['RUNDIR'], 'inparanoid'))
@@ -169,9 +176,9 @@ def process_results(genome_a, genome_b, munged_fnames):
     annotation_b = CONF['DATASETS'][genome_b]['annotation'],
   ))
 
-def perform_run(genome_a, genome_b, outgroup, munged_fnames, regenerate_data):
+def perform_run(genome_a, genome_b, outgroup, matrix, munged_fnames, regenerate_data):
   if regenerate_data:
-    prepare_inparanoid(outgroup)
+    prepare_inparanoid(outgroup, matrix)
     run_inparanoid(genome_a, genome_b, outgroup)
   process_results(genome_a, genome_b, munged_fnames)
 
@@ -219,7 +226,7 @@ def main():
     create_dirs()
   munged_fnames = munge_all_fasta_files(CONF['DATASETS'], args.regenerate_data)
 
-  perform_run(args.genome_a, args.genome_b, args.outgroup, munged_fnames, args.regenerate_data)
+  perform_run(args.genome_a, args.genome_b, args.outgroup, args.matrix, munged_fnames, args.regenerate_data)
 
 if __name__ == '__main__':
   main()

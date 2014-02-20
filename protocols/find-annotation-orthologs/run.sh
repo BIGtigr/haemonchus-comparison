@@ -1,7 +1,7 @@
 #!/bin/bash
 OUTDIR=../../runs/inparanoid
 mkdir -p $OUTDIR
-EXTRA_ARGS="--only-analyze"
+#EXTRA_ARGS="--only-analyze"
 
 for matrix in BLOSUM{62,80}; do
   # Haemonchus against Haemonchus.

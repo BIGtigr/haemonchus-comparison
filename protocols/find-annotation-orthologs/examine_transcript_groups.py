@@ -165,7 +165,7 @@ class TranscriptManager(object):
     # query and results sets match.
     transcripts_on_scaffolds_sum = sum([t['orthologues_on_scaffold_count'] for t in rows])
     assert transcripts_on_scaffolds_sum == len(transcript_names), \
-      'Some transcripts lack associated scaffolds'
+      'Some transcripts lack associated scaffolds (%s, %s)' % (transcripts_on_scaffolds_sum, len(transcript_names))
 
     return rows
 
