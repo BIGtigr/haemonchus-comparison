@@ -1,0 +1,4 @@
+ortho_group_size_linear.svg and ortho_group_size_log.svg were generated via these commands:
+
+    cd ~/work/jubilant-peanut/protocols/find-annotation-orthologs
+    cat ../../runs/inparanoid/PRJEB506-PRJNA205202.PRJNA13758-outgroup.BLOSUM80/results/inparanoid_results.json | ./plot_group_summary.py MHco3 McMaster ortho_group_size_{linear,log}.svg
