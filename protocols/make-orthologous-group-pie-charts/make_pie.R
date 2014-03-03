@@ -68,7 +68,7 @@ dev.off()
 # Display cardinality relationships of orthologous groups
 slices = c(4494, 407, 1951, 181)
 pct = round(slices/sum(slices)*100, 1)
-lbls = c('1 from MHco3, 1 from McMaster', '1 from MHco3, multiple from McMaster', 'Multiple from MHco3, 1 from McMaster', 'Multiple from MHco3, multiple from Mcmaster')
+lbls = c('One from MHco3, One from McMaster', 'One from MHco3, multiple from McMaster', 'Multiple from MHco3, One from McMaster', 'Multiple from MHco3, multiple from Mcmaster')
 lbls = paste(lbls, ' (', pct, '%)', sep='')
 svg('ortho_distribution.svg')
 pie(slices, labels=lbls, main='MHco3:McMaster orthologous groups')
