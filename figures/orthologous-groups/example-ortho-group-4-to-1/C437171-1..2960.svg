@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<svg height="150" width="890" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g transform="translate(0,0)">
+	<g  />
+	<g >
+		<g >
+			<g >
+				<line id="1-60-30" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="60" x2="860" y1="30" y2="30" />
+				<line id="2-60-30" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="60" x2="64" y1="30" y2="26" />
+				<line id="3-60-30" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="60" x2="64" y1="30" y2="34" />
+				<line id="4-860-30" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="860" x2="856" y1="30" y2="26" />
+				<line id="5-860-30" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="860" x2="856" y1="30" y2="34" />
+				<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="6-54-33" x="54" y="42">0k</text>
+				<line id="7-330-26" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="330" x2="330" y1="26" y2="34" />
+				<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="8-324-33" x="324" y="42">1k</text>
+				<line id="9-600-26" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="600" x2="600" y1="26" y2="34" />
+				<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="10-594-33" x="594" y="42">2k</text>
+				<line id="11-87-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="87" x2="87" y1="28" y2="32" />
+				<line id="12-114-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="114" x2="114" y1="28" y2="32" />
+				<line id="13-141-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="141" x2="141" y1="28" y2="32" />
+				<line id="14-168-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="168" x2="168" y1="28" y2="32" />
+				<line id="15-195-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="195" x2="195" y1="28" y2="32" />
+				<line id="16-222-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="222" x2="222" y1="28" y2="32" />
+				<line id="17-249-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="249" x2="249" y1="28" y2="32" />
+				<line id="18-276-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="276" x2="276" y1="28" y2="32" />
+				<line id="19-303-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="303" x2="303" y1="28" y2="32" />
+				<line id="20-357-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="357" x2="357" y1="28" y2="32" />
+				<line id="21-384-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="384" x2="384" y1="28" y2="32" />
+				<line id="22-411-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="411" x2="411" y1="28" y2="32" />
+				<line id="23-438-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="438" x2="438" y1="28" y2="32" />
+				<line id="24-465-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="465" x2="465" y1="28" y2="32" />
+				<line id="25-492-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="492" x2="492" y1="28" y2="32" />
+				<line id="26-519-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="519" x2="519" y1="28" y2="32" />
+				<line id="27-546-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="546" x2="546" y1="28" y2="32" />
+				<line id="28-573-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="573" x2="573" y1="28" y2="32" />
+				<line id="29-627-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="627" x2="627" y1="28" y2="32" />
+				<line id="30-654-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="654" x2="654" y1="28" y2="32" />
+				<line id="31-681-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="681" x2="681" y1="28" y2="32" />
+				<line id="32-708-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="708" x2="708" y1="28" y2="32" />
+				<line id="33-735-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="735" x2="735" y1="28" y2="32" />
+				<line id="34-762-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="762" x2="762" y1="28" y2="32" />
+				<line id="35-789-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="789" x2="789" y1="28" y2="32" />
+				<line id="36-816-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="816" x2="816" y1="28" y2="32" />
+				<line id="37-844-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="844" x2="844" y1="28" y2="32" />
+				<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="38-61-14" x="61" y="23">C437171:1..2960</text>
+			</g>
+			<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="39-61-14" x="61" y="23">C437171:1..2960</text>
+		</g>
+	</g>
+	<g  />
+	<!-- 
+	Generated using the Perl SVG Module V2.59
+	by Ronan Oger
+	Info: http://www.roitsystems.com/
+ -->
+</g>
+<g transform="translate(0,50)">
+	<g  />
+	<g >
+		<text fill="rgb(0,0,0)" font="san-serif" font-size="12" font-weight="bold" id="1-60-15" x="60" y="26">Coding Segments</text>
+		<g >
+			<line id="2-427-40" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="427" x2="755" y1="40" y2="40" />
+			<line id="3-755-40" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="40" y2="38" />
+			<line id="4-755-40" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="40" y2="42" />
+			<line id="5-427-44" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="427" x2="755" y1="44" y2="44" />
+			<line id="6-755-44" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="44" y2="42" />
+			<line id="7-755-44" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="44" y2="46" />
+			<line id="8-427-48" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="427" x2="755" y1="48" y2="48" />
+			<line id="9-755-48" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="48" y2="46" />
+			<line id="10-755-48" style="fill: rgb(211,211,211); fill-opacity: 1.0; stroke: rgb(211,211,211); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="755" x2="753" y1="48" y2="50" />
+			<g >
+				<g >
+					<g >
+						<g >
+							<g >
+								<rect height="2" id="11-427-47" style="fill: rgb(0,0,139); fill-opacity: 1.0; stroke: rgb(0,0,139); stroke-width: 1; stroke-opacity: 1.0" width="27" x="427" y="47" />
+							</g>
+						</g>
+					</g>
+					<g >
+						<g >
+							<g >
+								<rect height="2" id="12-648-47" style="fill: rgb(0,0,139); fill-opacity: 1.0; stroke: rgb(0,0,139); stroke-width: 1; stroke-opacity: 1.0" width="27" x="648" y="47" />
+							</g>
+						</g>
+					</g>
+					<g >
+						<g >
+							<g >
+								<rect height="2" id="13-728-47" style="fill: rgb(0,0,139); fill-opacity: 1.0; stroke: rgb(0,0,139); stroke-width: 1; stroke-opacity: 1.0" width="27" x="728" y="47" />
+							</g>
+						</g>
+					</g>
+				</g>
+				<text fill="rgb(0,0,0)" font="san-serif" font-size="9" font-weight="normal" id="14-427-27" x="427" y="36">Frame usage for cds:snap-C437171-abinit-gene-0.1-mRNA-1</text>
+			</g>
+		</g>
+	</g>
+	<g  />
+	<!-- 
+	Generated using the Perl SVG Module V2.59
+	by Ronan Oger
+	Info: http://www.roitsystems.com/
+ -->
+</g>
+<g transform="translate(0,107)">
+	<g  />
+	<g >
+		<text fill="rgb(0,0,0)" font="san-serif" font-size="12" font-weight="bold" id="1-60-15" x="60" y="26">Genes</text>
+		<g >
+			<g >
+				<g >
+					<g >
+						<line id="2-454-32.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="454" x2="551" y1="32.5" y2="28" />
+						<line id="3-551-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="551" x2="647" y1="28" y2="32.5" />
+						<line id="4-675-32.5" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="675" x2="701" y1="32.5" y2="28" />
+						<line id="5-701-28" style="fill: rgb(0,0,0); fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0; stroke-linecap: square" x1="701" x2="727" y1="28" y2="32.5" />
+						<g >
+							<g >
+								<rect height="9" id="6-355-28" style="fill: rgb(128,128,128); fill-opacity: 1.0; stroke: rgb(128,128,128); stroke-width: 1; stroke-opacity: 1.0" width="72" x="355" y="28" />
+								<rect height="9" id="7-355-28" style="fill: none; fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0" width="72" x="355" y="28" />
+							</g>
+						</g>
+						<g >
+							<g >
+								<rect height="9" id="8-427-28" style="fill: rgb(238,130,238); fill-opacity: 1.0; stroke: rgb(238,130,238); stroke-width: 1; stroke-opacity: 1.0" width="27" x="427" y="28" />
+								<rect height="9" id="9-427-28" style="fill: none; fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0" width="27" x="427" y="28" />
+							</g>
+						</g>
+						<g >
+							<g >
+								<rect height="9" id="10-648-28" style="fill: rgb(238,130,238); fill-opacity: 1.0; stroke: rgb(238,130,238); stroke-width: 1; stroke-opacity: 1.0" width="27" x="648" y="28" />
+								<rect height="9" id="11-648-28" style="fill: none; fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0" width="27" x="648" y="28" />
+							</g>
+						</g>
+						<g >
+							<g >
+								<polygon id="12-728-28" points="728,28 746,28 755,32.5 746,37 728,37 " style="fill: rgb(238,130,238); fill-opacity: 1.0; stroke: rgb(238,130,238); stroke-width: 1; stroke-opacity: 1.0" />
+								<polygon id="13-728-28" points="728,28 746,28 755,32.5 746,37 728,37 " style="fill: none; fill-opacity: 1.0; stroke: rgb(0,0,0); stroke-width: 1; stroke-opacity: 1.0" />
+							</g>
+						</g>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+	<g  />
+	<!-- 
+	Generated using the Perl SVG Module V2.59
+	by Ronan Oger
+	Info: http://www.roitsystems.com/
+ -->
+</g>
+</svg>
